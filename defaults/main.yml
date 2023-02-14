@@ -4,11 +4,11 @@ ubuntu2204cis_skip_for_travis: true
 
 ubuntu2204cis_notauto: false
 ubuntu2204cis_section1: true
-ubuntu2204cis_section2: true
-ubuntu2204cis_section3: true
-ubuntu2204cis_section4: true
-ubuntu2204cis_section5: true
-ubuntu2204cis_section6: true
+ubuntu2204cis_section2: false
+ubuntu2204cis_section3: false
+ubuntu2204cis_section4: false
+ubuntu2204cis_section5: false
+ubuntu2204cis_section6: false
 
 ubuntu2204cis_selinux_disable: true
 ubuntu2204cis_auditd_disable: false
@@ -24,11 +24,10 @@ ubuntu2204cis_ignore_remount_errors: false
 ubuntu2204cis_rule_1_1_1_1: true
 ubuntu2204cis_rule_1_1_1_2: true
 ubuntu2204cis_rule_1_1_1_3: true
-ubuntu2204cis_rule_1_1_1_4: true
-ubuntu2204cis_rule_1_1_1_5: true
-ubuntu2204cis_rule_1_1_1_6: true
-ubuntu2204cis_rule_1_1_1_7: true
-ubuntu2204cis_rule_1_1_2: true
+ubuntu2204cis_rule_1_1_2_1: true
+ubuntu2204cis_rule_1_1_2_2: true
+ubuntu2204cis_rule_1_1_2_3: true
+ubuntu2204cis_rule_1_1_2_4: true
 ubuntu2204cis_rule_1_1_3: true
 ubuntu2204cis_rule_1_1_4: true
 ubuntu2204cis_rule_1_1_5: false
@@ -475,7 +474,7 @@ tmp_mount_file:
   Debian: /usr/share/systemd/tmp.mount
 tmp_mount_options:
   RedHat: mode=1777,strictatime,noexec,nodev,nosuid
-  Debian: mode=1777,strictatime,nodev,nosuid
+  Debian: mode=1777,strictatime,nodev,nosuid,noexec
 chrony_config_file:
   RedHat: /etc/chrony.conf
   Debian: /etc/chrony/chrony.conf

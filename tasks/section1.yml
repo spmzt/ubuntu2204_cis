@@ -34,11 +34,11 @@
       - filesystems
       - rule_1.1.1.1
 
-- name: "SCORED | 1.1.1.2 | PATCH | Ensure mounting of freevxfs filesystems is disabled"
+- name: "SCORED | 1.1.1.2 | PATCH | Ensure mounting of squashfs filesystems is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install freevxfs"
-      line: "install freevxfs /bin/true"
+      regexp: "^(#)?install squashfs"
+      line: "install squashfs /bin/true"
       state: present
       create: true
   when:
@@ -46,137 +46,27 @@
   tags:
       - level1
       - scored
-      - patch
-      - freevxfs
-      - filesystems
-      - rule_1.1.1.2
-
-- name: "SCORED | 1.1.1.2 | PATCH | Remove freevxfs module"
-  modprobe:
-      name: freevxfs
-      state: absent
-  when:
-      - ubuntu2204cis_rule_1_1_1_2
-      - not ubuntu2204cis_skip_for_travis
-  tags:
-      - level1
-      - scored
-      - patch
-      - freevxfs
-      - filesystems
-      - rule_1.1.1.2
-
-- name: "SCORED | 1.1.1.3 | PATCH | Ensure mounting of jffs2 filesystems is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install jffs2(\\s|$)"
-      line: "install jffs2 /bin/true"
-      state: present
-      create: true
-  when:
-      - ubuntu2204cis_rule_1_1_1_3
-  tags:
-      - level1
-      - scored
-      - patch
-      - jffs2
-      - filesystems
-      - rule_1.1.1.3
-
-- name: "SCORED | 1.1.1.3 | PATCH | Remove jffs2 module"
-  modprobe:
-      name: jffs2
-      state: absent
-  when:
-      - ubuntu2204cis_rule_1_1_1_3
-      - not ubuntu2204cis_skip_for_travis
-  tags:
-      - level1
-      - scored
-      - patch
-      - jffs2
-      - filesystems
-      - rule_1.1.1.3
-
-- name: "SCORED | 1.1.1.4 | PATCH | Ensure mounting of hfs filesystems is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install hfs(\\s|$)"
-      line: "install hfs /bin/true"
-      state: present
-      create: true
-  when:
-      - ubuntu2204cis_rule_1_1_1_4
-  tags:
-      - level1
-      - scored
-      - patch
-      - hfs
-      - filesystems
-      - rule_1.1.1.4
-
-- name: "SCORED | 1.1.1.4 | PATCH | Remove hfs module"
-  modprobe:
-      name: hfs
-      state: absent
-  when:
-      - ubuntu2204cis_rule_1_1_1_4
-      - not ubuntu2204cis_skip_for_travis
-  tags:
-      - level1
-      - scored
-      - patch
-      - hfs
-      - filesystems
-      - rule_1.1.1.4
-
-- name: "SCORED | 1.1.1.5 | PATCH | Ensure mounting of hfsplus filesystems is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?install hfsplus(\\s|$)"
-      line: "install hfsplus /bin/true"
-      state: present
-      create: true
-  when:
-      - ubuntu2204cis_rule_1_1_1_5
-  tags:
-      - level1
-      - scored
-      - patch
-      - hfsplus
-      - filesystems
-      - rule_1.1.1.5
-
-- name: "SCORED | 1.1.1.5 | PATCH | Remove hfsplus module"
-  modprobe:
-      name: hfsplus
-      state: absent
-  when:
-      - ubuntu2204cis_rule_1_1_1_5
-      - not ubuntu2204cis_skip_for_travis
-  tags:
-      - level1
-      - scored
-      - patch
-      - hfsplus
-      - filesystems
-      - rule_1.1.1.5
-
-- name: "NOTSCORED | 1.1.1.6 | PATCH | Ensure mounting of squashfs filesystems is disabled"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu2204cis_rule_1_1_1_6
-  tags:
-      - level2
-      - notscored
       - patch
       - squashfs
       - filesystems
-      - rule_1.1.1.6
-      - notimplemented
+      - rule_1.1.1.2
 
-- name: "SCORED | 1.1.1.7 | PATCH | Ensure mounting of udf filesystems is disabled"
+- name: "SCORED | 1.1.1.2 | PATCH | Remove squashfs module"
+  modprobe:
+      name: squashfs
+      state: absent
+  when:
+      - ubuntu2204cis_rule_1_1_1_2
+      - not ubuntu2204cis_skip_for_travis
+  tags:
+      - level1
+      - scored
+      - patch
+      - squashfs
+      - filesystems
+      - rule_1.1.1.2
+
+- name: "SCORED | 1.1.1.3 | PATCH | Ensure mounting of udf filesystems is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install udf(\\s|$)"
@@ -184,21 +74,21 @@
       state: present
       create: true
   when:
-      - ubuntu2204cis_rule_1_1_1_7
+      - ubuntu2204cis_rule_1_1_1_3
   tags:
       - level1
       - scored
       - patch
       - udf
       - filesystems
-      - rule_1.1.1.7
+      - rule_1.1.1.3
 
-- name: "SCORED | 1.1.1.7 | PATCH | Remove udf module"
+- name: "SCORED | 1.1.1.3 | PATCH | Remove udf module"
   modprobe:
       name: udf
       state: absent
   when:
-      - ubuntu2204cis_rule_1_1_1_7
+      - ubuntu2204cis_rule_1_1_1_3
       - not ubuntu2204cis_skip_for_travis
   tags:
       - level1
@@ -206,9 +96,9 @@
       - patch
       - udf
       - filesystems
-      - rule_1.1.1.7
+      - rule_1.1.1.3
 
-- name: "SCORED | 1.1.2 | PATCH | Ensure separate partition exists for /tmp | enable and start/restart tmp.mount"
+- name: "SCORED | 1.1.2.1 | PATCH | Ensure separate partition exists for /tmp | enable and start/restart tmp.mount"
   copy:
       src: "{{ tmp_mount_file[ansible_os_family] }}"
       dest: /etc/systemd/system/tmp.mount
@@ -220,15 +110,14 @@
   notify:
       - systemd restart tmp.mount
   when:
-      - ubuntu2204cis_rule_1_1_2
-      - not ubuntu2204cis_skip_for_travis
+      - ubuntu2204cis_rule_1_1_2_1
   tags:
       - level1
       - scored
       - patch
-      - rule_1.1.2
+      - rule_1.1.2.1
 
-- name: "SCORED | 1.1.2 | PATCH | Ensure separate partition exists for /tmp | enable and start/restart tmp.mount"
+- name: "SCORED | 1.1.2.1 | PATCH | Ensure separate partition exists for /tmp | enable and start/restart tmp.mount"
   systemd:
       name: tmp.mount
       daemon_reload: yes
@@ -236,17 +125,16 @@
       masked: no
       state: started
   when:
-      - ubuntu2204cis_rule_1_1_2
-      - not ubuntu2204cis_skip_for_travis
+      - ubuntu2204cis_rule_1_1_2_1
   tags:
       - level1
       - scored
       - patch
-      - rule_1.1.2
+      - rule_1.1.2.1
 
-- name: "SCORED | 1.1.3 | PATCH | Ensure nodev option set on /tmp partition\n
-        SCORED | 1.1.4 | PATCH | Ensure nosuid option set on /tmp partition\n
-        SCORED | 1.1.5 | PATCH | Ensure noexec option set on /tmp partition\n
+- name: "SCORED | 1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition\n
+        SCORED | 1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition\n
+        SCORED | 1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition\n
         | drop custom tmp.mount"
   ini_file:
       path: "{{ item }}"
@@ -260,16 +148,16 @@
   notify:
       - systemd restart tmp.mount
   when:
-      - ubuntu2204cis_rule_1_1_3
-      - ubuntu2204cis_rule_1_1_4
-      - ubuntu2204cis_rule_1_1_5
+      - ubuntu2204cis_rule_1_1_2_2
+      - ubuntu2204cis_rule_1_1_2_3
+      - ubuntu2204cis_rule_1_1_2_4
   tags:
       - level1
       - scored
       - patch
-      - rule_1.1.3
-      - rule_1.1.4
-      - rule_1.1.5
+      - rule_1.1.2.2
+      - rule_1.1.2.3
+      - rule_1.1.2.4
 
 - name: "SCORED | 1.1.6 | PATCH | Ensure /dev/shm is configured\n
         SCORED | 1.1.7 | PATCH | Ensure nodev option set on /dev/shm partition\n
