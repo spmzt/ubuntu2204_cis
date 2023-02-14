@@ -159,31 +159,7 @@
       - rule_1.1.2.3
       - rule_1.1.2.4
 
-- name: "SCORED | 1.1.6 | PATCH | Ensure /dev/shm is configured\n
-        SCORED | 1.1.7 | PATCH | Ensure nodev option set on /dev/shm partition\n
-        SCORED | 1.1.8 | PATCH | Ensure nosuid option set on /dev/shm partition\n
-        SCORED | 1.1.9 | PATCH | Ensure noexec option set on /dev/shm partition"
-  mount:
-      name: /dev/shm
-      src: tmpfs
-      state: mounted
-      fstype: tmpfs
-      opts: "defaults,nodev,nosuid,noexec"
-  when:
-      - ubuntu2204cis_rule_1_1_6
-      - ubuntu2204cis_rule_1_1_7
-      - ubuntu2204cis_rule_1_1_8
-      - ubuntu2204cis_rule_1_1_9
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_1.1.6
-      - rule_1.1.7
-      - rule_1.1.8
-      - rule_1.1.9
-
-- name: "SCORED | 1.1.10 | PATCH | Ensure separate partition exists for /var"
+- name: "SCORED | 1.1.3.1 | PATCH | Ensure separate partition exists for /var"
   shell: mount | grep "on /var "
   register: var_mounted
   changed_when: false
@@ -191,15 +167,71 @@
   args:
       warn: false
   when:
-      - ubuntu2204cis_rule_1_1_10
+      - ubuntu2204cis_rule_1_1_3_1
   tags:
       - level2
       - scored
       - patch
-      - rule_1.1.10
+      - rule_1.1.3.1
       - skip_ansible_lint
 
-- name: "SCORED | 1.1.11 | PATCH | Ensure separate partition exists for /var/tmp"
+- name: "SCORED | 1.1.3.2 | PATCH | Ensure nodev option set on /var partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nodev"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_mounted
+    - ubuntu2204cis_rule_1_1_3_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.3.2
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_3_2
+
+- name: "SCORED | 1.1.3.3 | PATCH | Ensure nosuid option set on /var partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nosuid"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_mounted
+    - ubuntu2204cis_rule_1_1_3_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.3.3
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_3_3
+
+- name: "SCORED | 1.1.4.1 | PATCH | Ensure separate partition exists for /var/tmp"
   shell: mount | grep "on /var/tmp "
   register: var_tmp_mounted
   changed_when: false
@@ -207,37 +239,99 @@
   args:
       warn: false
   when:
-      - ubuntu2204cis_rule_1_1_11
+      - ubuntu2204cis_rule_1_1_4_1
   tags:
       - level2
       - scored
       - patch
-      - rule_1.1.11
+      - rule_1.1.4.1
       - skip_ansible_lint
 
-- name: "SCORED | 1.1.12 | PATCH | Ensure nodev option set on /var/tmp partition\n
-        SCORED | 1.1.13 | PATCH | Ensure nosuid option set on /var/tmp partition\n
-        SCORED | 1.1.14 | PATCH | Ensure noexec option set on /var/tmp partition"
+- name: "SCORED | 1.1.4.2 | PATCH | Ensure noexec option set on /var/tmp partition"
   mount:
-      name: /var/tmp
-      src: "{{ ubuntu2204cis_vartmp['source'] }}"
-      state: mounted
-      fstype: "{{ ubuntu2204cis_vartmp['fstype'] }}"
-      opts: "{{ ubuntu2204cis_vartmp['opts'] }}"
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},noexec"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
   when:
-      - ubuntu2204cis_vartmp['enabled'] == 'yes'
-      - ubuntu2204cis_rule_1_1_12
-      - ubuntu2204cis_rule_1_1_13
-      - ubuntu2204cis_rule_1_1_14
+    - item.mount == "/var/tmp" and item.options.find(",") >= 0 and item.options.find("noexec") == -1
+    - var_tmp_mounted
+    - ubuntu2204cis_rule_1_1_4_2
   tags:
       - level1
       - scored
       - patch
-      - rule_1.1.12
-      - rule_1.1.13
-      - rule_1.1.14
+      - rule_1.1.4.2
 
-- name: "SCORED | 1.1.15 | PATCH | Ensure separate partition exists for /var/log"
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_4_2
+
+- name: "SCORED | 1.1.4.3 | PATCH | Ensure nosuid option set on /var/tmp partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nosuid"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/tmp" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_tmp_mounted
+    - ubuntu2204cis_rule_1_1_4_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.4.3
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_4_3
+
+- name: "SCORED | 1.1.4.4 | PATCH | Ensure nodev option set on /var/tmp partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nodev"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/tmp" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_tmp_mounted
+    - ubuntu2204cis_rule_1_1_4_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.4.4
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_4_4
+
+- name: "SCORED | 1.1.5.1 | PATCH | Ensure separate partition exists for /var/log"
   shell: mount | grep "on /var/log "
   register: var_log_mounted
   changed_when: false
@@ -245,15 +339,99 @@
   args:
       warn: false
   when:
-      - ubuntu2204cis_rule_1_1_15
+      - ubuntu2204cis_rule_1_1_5_1
   tags:
       - level2
       - scored
       - patch
-      - rule_1.1.15
+      - rule_1.1.5.1
       - skip_ansible_lint
 
-- name: "SCORED | 1.1.16 | PATCH | Ensure separate partition exists for /var/log/audit"
+- name: "SCORED | 1.1.5.2 | PATCH | Ensure nodev option set on /var/log partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nodev"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/log" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_log_mounted
+    - ubuntu2204cis_rule_1_1_5_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.5.2
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_5_2
+
+- name: "SCORED | 1.1.5.3 | PATCH | Ensure noexec option set on /var/log partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},noexec"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/log" and item.options.find(",") >= 0 and item.options.find("noexec") == -1
+    - var_log_mounted
+    - ubuntu2204cis_rule_1_1_5_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.5.3
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_5_3
+
+- name: "SCORED | 1.1.5.4 | PATCH | Ensure nosuid option set on /var/log partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nosuid"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/log" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_log_mounted
+    - ubuntu2204cis_rule_1_1_5_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.5.4
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_5_4
+
+- name: "SCORED | 1.1.6.1 | PATCH | Ensure separate partition exists for /var/log/audit"
   shell: mount | grep "on /var/log/audit "
   register: var_log_audit_mounted
   changed_when: false
@@ -261,15 +439,99 @@
   args:
       warn: false
   when:
-      - ubuntu2204cis_rule_1_1_16
+      - ubuntu2204cis_rule_1_1_6_1
   tags:
       - level2
       - scored
       - patch
-      - rule_1.1.16
+      - rule_1.1.6.1
       - skip_ansible_lint
 
-- name: "SCORED | 1.1.17 | PATCH | Ensure separate partition exists for /home"
+- name: "SCORED | 1.1.6.2 | PATCH | Ensure noexec option set on /var/log/audit partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},noexec"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/log/audit" and item.options.find(",") >= 0 and item.options.find("noexec") == -1
+    - var_log_audit_mounted
+    - ubuntu2204cis_rule_1_1_6_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.6.2
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_6_2
+
+- name: "SCORED | 1.1.6.3 | PATCH | Ensure nodev option set on /var/log/audit partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nodev"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/log/audit" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_log_audit_mounted
+    - ubuntu2204cis_rule_1_1_6_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.6.3
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_6_3
+
+- name: "SCORED | 1.1.6.4 | PATCH | Ensure nosuid option set on /var/log/audit partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nosuid"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/var/log/audit" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_log_audit_mounted
+    - ubuntu2204cis_rule_1_1_6_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.6.4
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_6_4
+
+- name: "SCORED | 1.1.7.1 | PATCH | Ensure separate partition exists for /home"
   shell: mount | grep "on /home "
   register: home_mounted
   changed_when: false
@@ -277,100 +539,116 @@
   args:
       warn: false
   when:
-      - ubuntu2204cis_rule_1_1_17
+      - ubuntu2204cis_rule_1_1_7_1
   tags:
       - level2
       - scored
       - patch
-      - rule_1.1.17
+      - rule_1.1.7.1
       - skip_ansible_lint
 
-- name: "SCORED | 1.1.18 | PATCH | Ensure nodev option set on /home partition"
+- name: "SCORED | 1.1.7.2 | PATCH | Ensure nodev option set on /home partition"
   mount:
-      name: "/home"
-      src: "{{ item.device }}"
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nodev"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/home" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - home_mounted
+    - ubuntu2204cis_rule_1_1_7_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.7.2
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_7_2
+
+- name: "SCORED | 1.1.7.3 | PATCH | Ensure nosuid option set on /home partition"
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options }},nosuid"
+    state: present
+  with_items: "{{ ansible_mounts }}"
+  notify:
+      - load fstab file
+  when:
+    - item.mount == "/home" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - home_mounted
+    - ubuntu2204cis_rule_1_1_7_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.7.3
+
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_7_3
+
+- name: "SCORED | 1.1.8.1 | PATCH | Ensure nodev option set on /dev/shm partition\n
+        SCORED | 1.1.8.2 | PATCH | Ensure noexec option set on /dev/shm partition\n
+        SCORED | 1.1.8.3 | PATCH | Ensure nosuid option set on /dev/shm partition"
+  mount:
+      name: /dev/shm
+      src: tmpfs
       state: mounted
-      fstype: "{{ item.fstype }}"
-      opts: "nodev"
+      fstype: tmpfs
+      opts: "defaults,nodev,nosuid,noexec"
   when:
-      - ubuntu2204cis_rule_1_1_18
-      - item.mount == "/home"
-  with_items:
-      - "{{ ansible_mounts }}"
-  tags:
-      - scored
-      - level1
-      - patch
-      - rule_1.1.18
-
-- name: "NOTSCORED | 1.1.19 | PATCH | Ensure nodev option set on removable media partitions"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu2204cis_rule_1_1_19
-  tags:
-      - level1
-      - notscored
-      - patch
-      - rule_1.1.19
-      - notimplemented
-
-- name: "NOTSCORED | 1.1.20 | PATCH | Ensure nosuid option set on removable media partitions"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu2204cis_rule_1_1_20
-  tags:
-      - level1
-      - notscored
-      - patch
-      - rule_1.1.20
-      - notimplemented
-
-- name: "NOTSCORED | 1.1.21 | PATCH | Ensure noexec option set on removable media partitions"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu2204cis_rule_1_1_21
-  tags:
-      - level1
-      - notscored
-      - patch
-      - rule_1.1.21
-      - notimplemented
-
-- name: "SCORED | 1.1.22 | PATCH | Ensure sticky bit is set on all world-writable directories"
-  shell: |
-      set -o pipefail;
-      df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
-  args:
-      executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  when:
-      - ubuntu2204cis_rule_1_1_22
-      # - sticky_bit_on_worldwritable_dirs_audit.rc == '0'
+      - ubuntu2204cis_rule_1_1_8_1
+      - ubuntu2204cis_rule_1_1_8_2
+      - ubuntu2204cis_rule_1_1_8_3
   tags:
       - level1
       - scored
       - patch
-      - rule_1.1.22
+      - rule_1.1.8_1
+      - rule_1.1.8_2
+      - rule_1.1.8_3
 
-- name: "SCORED | 1.1.23 | PATCH | Disable Automounting"
+- name: Collect mounts facts
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - mounts
+  when:
+    - ubuntu2204cis_rule_1_1_8_1
+    - ubuntu2204cis_rule_1_1_8_2
+    - ubuntu2204cis_rule_1_1_8_3
+
+- name: "SCORED | 1.1.9 | PATCH | Disable Automounting"
   service:
       name: autofs
       enabled: false
   when:
       - not ubuntu2204cis_allow_autofs
       - autofs_service_status.stdout == "loaded"
-      - ubuntu2204cis_rule_1_1_23
+      - ubuntu2204cis_rule_1_1_9
   tags:
       - level1
       - scored
       - patch
-      - rule_1.1.23
+      - rule_1.1.9
 
-- name: "SCORED | 1.1.24 | PATCH | Disable USB Storage"
+- name: "SCORED | 1.1.10 | PATCH | Disable USB Storage"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install usb-storage(\\s|$)"
@@ -378,29 +656,14 @@
       state: present
       create: true
   when:
-      - ubuntu2204cis_rule_1_1_24
+      - ubuntu2204cis_rule_1_1_10
   tags:
       - level1
       - scored
       - patch
       - udf
       - filesystems
-      - rule_1.1.24
-
-- name: "SCORED | 1.1.24 | PATCH | Remove usb-storage module"
-  modprobe:
-      name: usb-storage
-      state: absent
-  when:
-      - ubuntu2204cis_rule_1_1_24
-      - not ubuntu2204cis_skip_for_travis
-  tags:
-      - level1
-      - scored
-      - patch
-      - usb
-      - filesystems
-      - rule_1.1.24
+      - rule_1.1.10
 
 - name: "NOTSCORED | 1.2.1 | PATCH | Ensure package manager repositories are configured"
   command: /bin/true
