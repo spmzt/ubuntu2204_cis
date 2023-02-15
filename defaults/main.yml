@@ -56,12 +56,13 @@ ubuntu2204cis_rule_1_2_1: true
 ubuntu2204cis_rule_1_2_2: true
 ubuntu2204cis_rule_1_3_1: true
 ubuntu2204cis_rule_1_3_2: true
-ubuntu2204cis_rule_1_3_3: true
 ubuntu2204cis_rule_1_4_1: true
+ubuntu2204cis_rule_1_4_1_disable_password: true
 ubuntu2204cis_rule_1_4_2: true
+ubuntu2204cis_rule_1_4_3: true
 ubuntu2204cis_rule_1_5_1: true
-ubuntu2204cis_rule_1_5_1_disable_password: true
 ubuntu2204cis_rule_1_5_2: true
+
 ubuntu2204cis_rule_1_5_3: false
 ubuntu2204cis_rule_1_5_4: true
 ubuntu2204cis_rule_1_6_1: true
