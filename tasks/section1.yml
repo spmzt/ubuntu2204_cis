@@ -1174,25 +1174,23 @@
       - patch
       - rule_1.5.4
 
-### edit
-
-- name: "SCORED | 1.7.1.1 | PATCH | Ensure AppArmor is installed"
+- name: "SCORED | 1.6.1.1 | PATCH | Ensure AppArmor is installed"
   apt:
       name:
           - apparmor
           - apparmor-utils
       state: present
   when:
-      - ubuntu2204cis_rule_1_7_1_1
+      - ubuntu2204cis_rule_1_6_1_1
   tags:
       - level1
       - scored
       - patch
-      - rule_1.7.1.1
+      - rule_1.6.1.1
 
-- name: "SCORED | 1.7.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration"
+- name: "SCORED | 1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration"
   block:
-      - name: "SCORED | 1.7.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration"
+      - name: "SCORED | 1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration"
         replace:
             dest: /etc/default/grub
             regexp: '^(GRUB_CMDLINE_LINUX=(?!.*apparmor)\"[^\"]*)(\".*)'
@@ -1200,7 +1198,7 @@
         notify:
             - generate new grub config
 
-      - name: "SCORED | 1.7.1.2 | PATCH | Ensure AppArmor Security is enabled in the bootloader configuration"
+      - name: "SCORED | 1.6.1.2 | PATCH | Ensure AppArmor Security is enabled in the bootloader configuration"
         replace:
             dest: /etc/default/grub
             regexp: '^(GRUB_CMDLINE_LINUX=(?!.*security)\"[^\"]*)(\".*)'
@@ -1208,143 +1206,101 @@
         notify:
             - generate new grub config
   when:
-      - ubuntu2204cis_rule_1_7_1_2
+      - ubuntu2204cis_rule_1_6_1_2
   tags:
       - level1
       - scored
       - patch
-      - rule_1.7.1.2
+      - rule_1.6.1.2
 
-- name: "SCORED | 1.7.1.3 | PATCH | Ensure all AppArmor Profiles are in enforce or complain mode"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu2204cis_rule_1_7_1_3
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_1.7.1.3
-      - notimplemented
-
-
-
-#### WRONG Numbering...........
-- name: "SCORED | 1.3.1 | PATCH | Ensure sudo is installed"
+- name: "SCORED | 1.6.1.3 | PATCH | Ensure all AppArmor Profiles are in complain mode"
   apt:
-      name:
-          - sudo
+      name: apparmor-utils
       state: present
-      install_recommends: false
+  register: apparmor_utils
   when:
-      - ubuntu2204cis_rule_1_3_1
+      - ubuntu2204cis_rule_1_6_1_3
   tags:
       - level1
       - scored
-      - sudo
       - patch
-      - rule_1.3.1
+      - rule_1.6.1.3
 
-- name: "SCORED | 1.3.2 | PATCH | Ensure sudo commands use pty"
-  lineinfile:
-      dest: /etc/sudoers
+- name: "SCORED | 1.6.1.3 | PATCH | Ensure all AppArmor Profiles are in complain mode"
+  command: aa-complain /etc/apparmor.d/*
+  when:
+      - ubuntu2204cis_rule_1_6_1_3
+      - apparmor_utils
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.6.1.3
+
+- name: "SCORED | 1.6.1.4 | PATCH | Ensure all AppArmor Profiles are in enforce mode"
+  apt:
+      name: apparmor-utils
       state: present
-      regexp: '^Defaults use_pty'
-      line: 'Defaults use_pty'
-      validate: 'visudo -cf %s'
+  register: apparmor_utils
   when:
-      - ubuntu2204cis_rule_1_3_2
-  tags:
-      - level1
-      - scored
-      - sudo
-      - patch
-      - rule_1.3.2
-
-- name: "SCORED | 1.3.3 | PATCH | Ensure sudo log file exists"
-  lineinfile:
-      dest: /etc/sudoers
-      state: present
-      regexp: '^Defaults logfile.*'
-      line: 'Defaults logfile="/var/log/sudo.log"'
-      validate: 'visudo -cf %s'
-  when:
-      - ubuntu2204cis_rule_1_3_3
-  tags:
-      - level1
-      - scored
-      - sudo
-      - patch
-      - rule_1.3.3
-
-- name: "SCORED | 1.6.1 | PATCH | Ensure XD/NX support is enabled"
-  shell: |
-      set -o pipefail;
-      dmesg | grep -E "NX|XD" | grep " active"
-  args:
-      executable: /bin/bash
-  changed_when: false
-  when:
-      - ubuntu2204cis_rule_1_6_1
-      - not ubuntu2204cis_skip_for_travis
+      - ubuntu2204cis_rule_1_6_1_4
   tags:
       - level1
       - scored
       - patch
-      - rule_1.6.1
+      - rule_1.6.1.4
 
-- name: "SCORED | 1.7.1.4 | PATCH |  Ensure all AppArmor Profiles are enforcing"
-  command: /bin/true
-  changed_when: false
+- name: "SCORED | 1.6.1.4 | PATCH | Ensure all AppArmor Profiles are in enforce mode"
+  command: aa-enforce /etc/apparmor.d/*
   when:
-      - ubuntu2204cis_rule_1_7_1_4
+      - ubuntu2204cis_rule_1_6_1_4
+      - apparmor_utils
   tags:
       - level1
       - scored
       - patch
-      - rule_1.7.1.4
-      - notimplemented
+      - rule_1.6.1.4
 
-- name: "SCORED | 1.8.1.1 | PATCH | Ensure message of the day is configured properly"
+- name: "SCORED | 1.7.1 | PATCH | Ensure message of the day is configured properly"
   template:
       src: etc/motd.j2
       dest: /etc/motd
   when:
-      - ubuntu2204cis_rule_1_8_1_1
+      - ubuntu2204cis_rule_1_7_1
   tags:
       - level1
       - scored
       - patch
       - banner
-      - rule_1.8.1.1
+      - rule_1.7.1
 
-- name: "SCORED | 1.8.1.2 | PATCH | Ensure local login warning banner is configured properly"
+- name: "SCORED | 1.7.2 | PATCH | Ensure local login warning banner is configured properly"
   template:
       src: etc/issue.j2
       dest: /etc/issue
   when:
-      - ubuntu2204cis_rule_1_8_1_2
+      - ubuntu2204cis_rule_1_7_2
   tags:
       - level1
       - scored
       - patch
       - banner
-      - rule_1.8.1.2
+      - rule_1.7.2
 
-- name: "SCORED | 1.8.1.3 | PATCH | Ensure remote login warning banner is configured properly"
+- name: "SCORED | 1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
   template:
       src: etc/issue.net.j2
       dest: /etc/issue.net
   when:
-      - ubuntu2204cis_rule_1_8_1_3
+      - ubuntu2204cis_rule_1_7_3
   tags:
       - level1
       - scored
       - patch
       - banner
-      - rule_1.8.1.3
+      - rule_1.7.3
 
-- name: "SCORED | 1.8.1.4 | PATCH | Ensure permissions on /etc/motd are configured"
+- name: "SCORED | 1.7.4 | PATCH | Ensure permissions on /etc/motd are configured"
   file:
       dest: /etc/motd
       state: file
@@ -1352,15 +1308,15 @@
       group: root
       mode: 0644
   when:
-      - ubuntu2204cis_rule_1_8_1_4
+      - ubuntu2204cis_rule_1_7_4
   tags:
       - level1
       - scored
       - patch
       - perms
-      - rule_1.8.1.4
+      - rule_1.7.4
 
-- name: "SCORED | 1.8.1.5 | PATCH | Ensure permissions on /etc/issue are configured"
+- name: "SCORED | 1.7.5 | PATCH | Ensure permissions on /etc/issue are configured"
   file:
       dest: /etc/issue
       state: file
@@ -1368,15 +1324,15 @@
       group: root
       mode: 0644
   when:
-      - ubuntu2204cis_rule_1_8_1_5
+      - ubuntu2204cis_rule_1_7_5
   tags:
       - level1
       - scored
       - patch
       - perms
-      - rule_1.8.1.5
+      - rule_1.7.5
 
-- name: "SCORED | 1.8.1.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
+- name: "SCORED | 1.7.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
   file:
       dest: /etc/issue.net
       state: file
@@ -1384,27 +1340,28 @@
       group: root
       mode: 0644
   when:
-      - ubuntu2204cis_rule_1_8_1_6
+      - ubuntu2204cis_rule_1_7_6
   tags:
       - level1
       - scored
       - patch
       - perms
-      - rule_1.8.1.6
+      - rule_1.7.6
 
-- name: "NOTSCORED | 1.9 | PATCH | Ensure updates, patches, and additional security software are installed"
+- name: "SCORED | 1.8.1 | PATCH | Ensure GNOME Display Manager is removed"
   apt:
-      upgrade: dist
+      name: gdm3
+      state: absent
+  register: gdm3
   when:
-      - ubuntu2204cis_apply_upgrades
+      - ubuntu2204cis_rule_1_8_1
   tags:
       - level1
-      - notscored
+      - scored
       - patch
-      - rule_1.8
-      - skip_ansible_lint
+      - rule_1.8.1
 
-- name: "SCORED | 1.10 | PATCH | Ensure GDM login banner is configured"
+- name: "SCORED | 1.8.2 | PATCH | Ensure GDM login banner is configured"
   lineinfile:
       dest: "{{ item.file }}"
       regexp: "{{ item.regexp }}"
@@ -1423,10 +1380,72 @@
       - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-text', line: "banner-message-text='{{ ubuntu2204cis_warning_banner }}' " }
   when:
       - ubuntu2204cis_gui
-      - ubuntu2204cis_rule_1_10
+      - ubuntu2204cis_rule_1_8_2
   tags:
       - level1
       - scored
       - patch
       - banner
-      - rule_1.10
+      - rule_1.8.2
+
+- name: "SCORED | 1.8.3 | PATCH | Ensure GDM disable-user-list option is enabled"
+  copy:
+      src: etc/dconf/profile/gdm
+      dest: /etc/dconf/profile/gdm
+      owner: root
+      group: root
+      mode: 0644
+      force: true
+      remote_src: false
+  when:
+      - ubuntu2204cis_rule_1_8_3
+      - ubuntu2204cis_gui
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.8.3
+
+- name: "SCORED | 1.8.3 | PATCH | Ensure GDM disable-user-list option is enabled"
+  copy:
+      src: etc/dconf/gdm.d/00-login-screen
+      dest: /etc/dconf/gdm.d/00-login-screen
+      owner: root
+      group: root
+      mode: 0644
+      force: true
+      remote_src: false
+  when:
+      - ubuntu2204cis_rule_1_8_3
+      - ubuntu2204cis_gui
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.8.3
+
+- name: "SCORED | 1.8.3 | PATCH | Ensure GDM disable-user-list option is enabled"
+  command: dconf update
+  when:
+      - ubuntu2204cis_rule_1_8_3
+      - ubuntu2204cis_gui
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.8.3
+
+- debug:
+  msg: "1.8.4 to 1.8.10 in favour of the 1.8.1 is not implemented."
+
+- name: "NOTSCORED | 1.9 | PATCH | Ensure updates, patches, and additional security software are installed"
+  apt:
+      upgrade: dist
+  when:
+      - ubuntu2204cis_apply_upgrades
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_1.9
+      - skip_ansible_lint

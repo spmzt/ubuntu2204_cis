@@ -64,23 +64,21 @@ ubuntu2204cis_rule_1_5_1: true
 ubuntu2204cis_rule_1_5_2: true
 ubuntu2204cis_rule_1_5_3: false
 ubuntu2204cis_rule_1_5_4: true
+ubuntu2204cis_rule_1_6_1_1: true
+ubuntu2204cis_rule_1_6_1_2: true
+ubuntu2204cis_rule_1_6_1_3: false # next rule will overwrite this
+ubuntu2204cis_rule_1_6_1_4: true
+ubuntu2204cis_rule_1_7_1: true
+ubuntu2204cis_rule_1_7_2: true
+ubuntu2204cis_rule_1_7_3: true
+ubuntu2204cis_rule_1_7_4: true
+ubuntu2204cis_rule_1_7_5: true
+ubuntu2204cis_rule_1_7_6: true
+ubuntu2204cis_rule_1_8_1: true
+ubuntu2204cis_rule_1_8_2: false # 1.8.1
+ubuntu2204cis_rule_1_8_3: false # 1.8.1
 
-ubuntu2204cis_rule_1_6_1: true
-ubuntu2204cis_rule_1_6_2: true
-ubuntu2204cis_rule_1_6_3: true
-ubuntu2204cis_rule_1_6_4: true
-ubuntu2204cis_rule_1_7_1_1: true
-ubuntu2204cis_rule_1_7_1_2: true
-ubuntu2204cis_rule_1_7_1_3: true
-ubuntu2204cis_rule_1_7_1_4: true
-ubuntu2204cis_rule_1_8_1_1: true
-ubuntu2204cis_rule_1_8_1_2: true
-ubuntu2204cis_rule_1_8_1_3: true
-ubuntu2204cis_rule_1_8_1_4: true
-ubuntu2204cis_rule_1_8_1_5: true
-ubuntu2204cis_rule_1_8_1_6: true
 ubuntu2204cis_rule_1_9: true
-ubuntu2204cis_rule_1_10: true
 
 # Section 2 rules
 ubuntu2204cis_rule_2_1_1: true
