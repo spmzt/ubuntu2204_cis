@@ -21,13 +21,13 @@ ubuntu2204cis_ignore_remount_errors: false
 # PLEASE NOTE: These work in coordination with the section # group variables and tags.
 # You must enable an entire section in order for the variables below to take effect.
 # Section 1 rules
-ubuntu2204cis_rule_1_1_1_1: false #true
-ubuntu2204cis_rule_1_1_1_2: false #true
-ubuntu2204cis_rule_1_1_1_3: false #true
-ubuntu2204cis_rule_1_1_2_1: false #true
-ubuntu2204cis_rule_1_1_2_2: false #true
-ubuntu2204cis_rule_1_1_2_3: false #true
-ubuntu2204cis_rule_1_1_2_4: false #true
+ubuntu2204cis_rule_1_1_1_1: true
+ubuntu2204cis_rule_1_1_1_2: true
+ubuntu2204cis_rule_1_1_1_3: true
+ubuntu2204cis_rule_1_1_2_1: true
+ubuntu2204cis_rule_1_1_2_2: true
+ubuntu2204cis_rule_1_1_2_3: true
+ubuntu2204cis_rule_1_1_2_4: true
 ubuntu2204cis_rule_1_1_3_1: true
 ubuntu2204cis_rule_1_1_3_2: true
 ubuntu2204cis_rule_1_1_3_3: true

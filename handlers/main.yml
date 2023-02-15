@@ -113,9 +113,3 @@
   service:
       name: systemd-journald
       state: restarted
-
-- name: load fstab file
-  become: true
-  command: /usr/bin/mount -a
-  tags:
-      - mount

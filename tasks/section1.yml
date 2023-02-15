@@ -183,10 +183,19 @@
     opts: "{{ item.options }},nodev"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_mounted
+    - ubuntu2204cis_rule_1_1_3_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.3.2
+
+- name: "SCORED | 1.1.3.2 | PATCH | Ensure nodev option set on /var partition (APPLY)"
+  shell: mount /var -o remount
+  when:
     - var_mounted
     - ubuntu2204cis_rule_1_1_3_2
   tags:
@@ -211,10 +220,19 @@
     opts: "{{ item.options }},nosuid"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_mounted
+    - ubuntu2204cis_rule_1_1_3_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.3.3
+
+- name: "SCORED | 1.1.3.3 | PATCH | Ensure nosuid option set on /var partition (APPLY)"
+  shell: mount /var -o remount
+  when:
     - var_mounted
     - ubuntu2204cis_rule_1_1_3_3
   tags:
@@ -255,10 +273,19 @@
     opts: "{{ item.options }},noexec"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/tmp" and item.options.find(",") >= 0 and item.options.find("noexec") == -1
+    - var_tmp_mounted
+    - ubuntu2204cis_rule_1_1_4_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.4.2
+
+- name: "SCORED | 1.1.4.2 | PATCH | Ensure noexec option set on /var/tmp partition (APPLY)"
+  shell: mount /var/tmp -o remount
+  when:
     - var_tmp_mounted
     - ubuntu2204cis_rule_1_1_4_2
   tags:
@@ -283,10 +310,19 @@
     opts: "{{ item.options }},nosuid"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/tmp" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_tmp_mounted
+    - ubuntu2204cis_rule_1_1_4_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.4.3
+
+- name: "SCORED | 1.1.4.3 | PATCH | Ensure nosuid option set on /var/tmp partition (APPLY)"
+  shell: mount /var/tmp -o remount
+  when:
     - var_tmp_mounted
     - ubuntu2204cis_rule_1_1_4_3
   tags:
@@ -311,10 +347,19 @@
     opts: "{{ item.options }},nodev"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/tmp" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_tmp_mounted
+    - ubuntu2204cis_rule_1_1_4_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.4.4
+
+- name: "SCORED | 1.1.4.4 | PATCH | Ensure nodev option set on /var/tmp partition (APPLY)"
+  shell: mount /var/tmp -o remount
+  when:
     - var_tmp_mounted
     - ubuntu2204cis_rule_1_1_4_4
   tags:
@@ -355,10 +400,19 @@
     opts: "{{ item.options }},nodev"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/log" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_log_mounted
+    - ubuntu2204cis_rule_1_1_5_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.5.2
+
+- name: "SCORED | 1.1.5.2 | PATCH | Ensure nodev option set on /var/log partition (APPLY)"
+  shell: mount /var/log -o remount
+  when:
     - var_log_mounted
     - ubuntu2204cis_rule_1_1_5_2
   tags:
@@ -383,10 +437,19 @@
     opts: "{{ item.options }},noexec"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/log" and item.options.find(",") >= 0 and item.options.find("noexec") == -1
+    - var_log_mounted
+    - ubuntu2204cis_rule_1_1_5_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.5.3
+
+- name: "SCORED | 1.1.5.3 | PATCH | Ensure noexec option set on /var/log partition (APPLY)"
+  shell: mount /var/log -o remount
+  when:
     - var_log_mounted
     - ubuntu2204cis_rule_1_1_5_3
   tags:
@@ -411,10 +474,19 @@
     opts: "{{ item.options }},nosuid"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/log" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_log_mounted
+    - ubuntu2204cis_rule_1_1_5_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.5.4
+
+- name: "SCORED | 1.1.5.4 | PATCH | Ensure nosuid option set on /var/log partition (APPLY)"
+  shell: mount /var/log -o remount
+  when:
     - var_log_mounted
     - ubuntu2204cis_rule_1_1_5_4
   tags:
@@ -455,10 +527,19 @@
     opts: "{{ item.options }},noexec"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
-    - item.mount == "/var/log/audit" and item.options.find(",") >= 0 and item.options.find("noexec") == -1
+      - item.mount == "/var/log/audit" and item.options.find(",") >= 0 and item.options.find("noexec") == -1
+      - var_log_audit_mounted
+      - ubuntu2204cis_rule_1_1_6_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.6.2
+
+- name: "SCORED | 1.1.6.2 | PATCH | Ensure noexec option set on /var/log/audit partition (APPLY)"
+  shell: mount /var/log/audit -o remount
+  when:
     - var_log_audit_mounted
     - ubuntu2204cis_rule_1_1_6_2
   tags:
@@ -483,10 +564,19 @@
     opts: "{{ item.options }},nodev"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/log/audit" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - var_log_audit_mounted
+    - ubuntu2204cis_rule_1_1_6_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.6.3
+
+- name: "SCORED | 1.1.6.3 | PATCH | Ensure nodev option set on /var/log/audit partition (APPLY)"
+  shell: mount /var/log/audit -o remount
+  when:
     - var_log_audit_mounted
     - ubuntu2204cis_rule_1_1_6_3
   tags:
@@ -511,10 +601,19 @@
     opts: "{{ item.options }},nosuid"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/var/log/audit" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - var_log_audit_mounted
+    - ubuntu2204cis_rule_1_1_6_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.6.4
+
+- name: "SCORED | 1.1.6.4 | PATCH | Ensure nosuid option set on /var/log/audit partition (APPLY)"
+  shell: mount /var/log/audit -o remount
+  when:
     - var_log_audit_mounted
     - ubuntu2204cis_rule_1_1_6_4
   tags:
@@ -555,10 +654,19 @@
     opts: "{{ item.options }},nodev"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/home" and item.options.find(",") >= 0 and item.options.find("nodev") == -1
+    - home_mounted
+    - ubuntu2204cis_rule_1_1_7_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.7.2
+
+- name: "SCORED | 1.1.7.2 | PATCH | Ensure nodev option set on /home partition (APPLY)"
+  shell: mount /home -o remount
+  when:
     - home_mounted
     - ubuntu2204cis_rule_1_1_7_2
   tags:
@@ -583,10 +691,19 @@
     opts: "{{ item.options }},nosuid"
     state: present
   with_items: "{{ ansible_mounts }}"
-  notify:
-      - load fstab file
   when:
     - item.mount == "/home" and item.options.find(",") >= 0 and item.options.find("nosuid") == -1
+    - home_mounted
+    - ubuntu2204cis_rule_1_1_7_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.1.7.3
+
+- name: "SCORED | 1.1.7.3 | PATCH | Ensure nosuid option set on /home partition (APPLY)"
+  shell: mount /home -o remount
+  when:
     - home_mounted
     - ubuntu2204cis_rule_1_1_7_3
   tags:
