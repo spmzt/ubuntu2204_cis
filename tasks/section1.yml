@@ -1436,7 +1436,7 @@
       - rule_1.8.3
 
 - debug:
-  msg: "1.8.4 to 1.8.10 in favour of the 1.8.1 is not implemented."
+    msg: "1.8.4 to 1.8.10 in favour of the 1.8.1 is not implemented."
 
 - name: "NOTSCORED | 1.9 | PATCH | Ensure updates, patches, and additional security software are installed"
   apt:
