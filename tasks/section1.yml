@@ -782,8 +782,23 @@
       - filesystems
       - rule_1.1.10
 
-- name: "NOTSCORED | 1.2.1 | PATCH | Ensure package manager repositories are configured"
-  command: /bin/true
+- name: "NOTSCORED | 1.2.1 | PATCH | Ensure package manager repositories are configured (HTTPS Transport Installation)"
+  apt:
+      name:
+          - apt-transport-https
+      state: present
+      install_recommends: false
+  when:
+      - ubuntu2204cis_rule_1_2_1
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_1.2.1
+
+- name: "NOTSCORED | 1.2.1 | PATCH | Ensure package manager repositories are configured (apt-cache policy)"
+  command: apt-cache policy
+  register: apt_cache_policy
   changed_when: false
   when:
       - ubuntu2204cis_rule_1_2_1
@@ -792,10 +807,22 @@
       - notscored
       - patch
       - rule_1.2.1
-      - notimplemented
 
-- name: "NOTSCORED | 1.2.2 | PATCH | Ensure GPG keys are configured"
-  command: /bin/true
+- debug:
+    msg: "Check your own site policies. It's Manual and NOTSCORED | 1.2.1 | PATCH | Ensure package manager repositories are configured"
+  when: not apt_cache_policy.stdout | regex_search(item)
+  with_items:
+    - 'https:\/\/\S?\S?\.archive\.ubuntu\.com\/ubuntu jammy'
+
+- debug:
+    msg: "Main ubuntu repository is exist on top of https. It can be trusted. However, It's NOTSCORED | 1.2.1 | PATCH | Ensure package manager repositories are configured"
+  when: apt_cache_policy.stdout | regex_search(item)
+  with_items:
+    - 'https:\/\/\S?\S?\.archive\.ubuntu\.com\/ubuntu jammy'
+
+- name: "NOTSCORED | 1.2.2 | PATCH | Ensure GPG keys are configured (apt-key list)"
+  command: apt-key list
+  register: apt_key
   changed_when: false
   when:
       - ubuntu2204cis_rule_1_2_2
@@ -804,8 +831,251 @@
       - notscored
       - patch
       - rule_1.2.2
-      - notimplemented
 
+- debug:
+    msg: "Update your package manager GPG keys in accordance with site policy. It's Manual and NOTSCORED | 1.2.2 | PATCH | Ensure GPG keys are configured"
+  when: not apt_key.stdout | regex_search(item)
+  with_items:
+    - 'F6EC B376 2474 EDA9 D21B  7022 8719 20D1 991B C93C'
+
+- debug:
+    msg: "Main ubuntu gpg key is exist. It can be trusted. However, It's NOTSCORED | 1.2.2 | PATCH | Ensure GPG keys are configured"
+  when: apt_key.stdout | regex_search(item)
+  with_items:
+    - 'F6EC B376 2474 EDA9 D21B  7022 8719 20D1 991B C93C'
+
+- name: "NOTSCORED | 1.2.2 | PATCH | Ensure GPG keys are configured (import ubuntu 2018 gpg keys)"
+  copy:
+      src: ubuntu-keyring-2018-archive.gpg
+      dest: /etc/apt/trusted.gpg.d/
+      owner: root
+      group: root
+      mode: 0644
+      force: true
+      remote_src: false
+  when:
+      - ubuntu2204cis_rule_1_2_2
+      - not apt_key.stdout | regex_search('F6EC B376 2474 EDA9 D21B  7022 8719 20D1 991B C93C')
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_1.2.2
+
+- name: "SCORED | 1.3.1 | PATCH | Ensure AIDE is installed (install nullmailer instead of postfix)"
+  apt:
+      name:
+          - nullmailer
+      state: present
+      install_recommends: false
+  when:
+      - ubuntu2204cis_rule_1_3_1
+      - not postfix_installed.rc == 0
+  tags:
+      - level1
+      - scored
+      - aide
+      - patch
+      - rule_1.3.1
+
+- name: "SCORED | 1.3.1 | PATCH | Ensure AIDE is installed"
+  apt:
+      name:
+          - aide
+          - aide-common
+      state: present
+      install_recommends: false
+  when:
+      - ubuntu2204cis_rule_1_3_1
+  tags:
+      - level1
+      - scored
+      - aide
+      - patch
+      - rule_1.3.1
+
+- name: "SCORED | 1.3.1 | PATCH | Stat AIDE DB"
+  stat: path=/var/lib/aide/aide.db
+  register: aide_db
+  tags:
+      - level1
+      - scored
+      - aide
+      - patch
+      - rule_1.3.1
+
+- name: "SCORED | 1.3.1 | PATCH | Init AIDE | This may take a LONG time"
+  command: /usr/sbin/aideinit
+  args:
+      creates: /var/lib/aide/aide.db
+  when:
+      - ubuntu2204cis_config_aide
+      - ubuntu2204cis_rule_1_3_1
+      - not aide_db.stat.exists
+      - not ubuntu2204cis_skip_for_travis
+  tags:
+      - level1
+      - scored
+      - aide
+      - patch
+      - rule_1.3.1
+
+- name: "SCORED | 1.3.2 | PATCH | Stat AIDE daily cron"
+  stat: path=/etc/cron.daily/aide
+  register: aide_daily_cron
+  tags:
+    - level1
+    - scored
+    - aide
+    - file_integrity
+    - patch
+    - rule_1.3.2
+
+- name: "SCORED | 1.3.2 | PATCH | Ensure filesystem integrity is regularly checked"
+  cron:
+      name: Run AIDE integrity check weekly
+      cron_file: "{{ ubuntu2204cis_aide_cron['cron_file'] }}"
+      user: "{{ ubuntu2204cis_aide_cron['cron_user'] }}"
+      minute: "{{ ubuntu2204cis_aide_cron['aide_minute'] | default('0') }}"
+      hour: "{{ ubuntu2204cis_aide_cron['aide_hour'] | default('5') }}"
+      day: "{{ ubuntu2204cis_aide_cron['aide_day'] | default('*') }}"
+      month: "{{ ubuntu2204cis_aide_cron['aide_month'] | default('*') }}"
+      weekday: "{{ ubuntu2204cis_aide_cron['aide_weekday'] | default('0') }}"
+      job: "{{ ubuntu2204cis_aide_cron['aide_job'] }}"
+  when:
+      - ubuntu2204cis_rule_1_3_2
+      - not aide_daily_cron.stat.exists
+  tags:
+      - level1
+      - scored
+      - aide
+      - file_integrity
+      - patch
+      - rule_1.3.2
+
+
+- name: "SCORED | 1.4.1 | PATCH | Ensure bootloader password is set - generate password"
+  shell: "set -o pipefail;
+        if [ '{{ ubuntu2204cis_bootloader_password }}' == 'random' ];
+        then PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c12); else PASSWORD='{{ ubuntu2204cis_bootloader_password }}';
+        fi;
+        echo -e \"$PASSWORD\n$PASSWORD\" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf/{print$NF}'"
+  register: grub_pass
+  args:
+      executable: /bin/bash
+  when:
+      - ubuntu2204cis_set_boot_pass
+      - ubuntu2204cis_rule_1_4_1
+  tags:
+      - level1
+      - scored
+      - grub
+      - patch
+      - rule_1.4.1
+
+- name: "SCORED | 1.4.1 | PATCH | Ensure bootloader password is set - generate config"
+  copy:
+      dest: /etc/grub.d/00_password
+      content: "cat << EOF\nset superusers=\"root\"\npassword_pbkdf2 root {{ grub_pass.stdout }}\nEOF"
+      owner: root
+      group: root
+      mode: 0755
+  notify: generate new grub config
+  when:
+      - ubuntu2204cis_set_boot_pass and grub_pass is defined and grub_pass.stdout is defined and grub_pass.stdout | length >0
+      - ubuntu2204cis_rule_1_4_1
+  tags:
+      - level1
+      - scored
+      - grub
+      - patch
+      - rule_1.4.1
+
+- name: "SCORED | 1.4.1 | PATCH | Ensure bootloader password is set - disable password for system boot"
+  replace:
+      path: /etc/grub.d/10_linux
+      regexp: '--class os"'
+      replace: '--class os --unrestricted"'
+  notify: generate new grub config
+  when:
+      - ubuntu2204cis_set_boot_pass
+      - ubuntu2204cis_rule_1_4_1
+      - ubuntu2204cis_rule_1_4_1_disable_password
+  tags:
+      - level1
+      - scored
+      - grub
+      - patch
+      - rule_1.4.1
+
+- name: "SCORED | 1.4.2 | PATCH | Ensure permissions on bootloader config are configured for grub.cfg"
+  file:
+      path: "/boot/grub/grub.cfg"
+      owner: root
+      group: root
+      mode: 0400
+  when:
+      - ansible_os_family == "Debian"
+      - ubuntu2204cis_rule_1_4_2
+  tags:
+      - level1
+      - scored
+      - grub
+      - patch
+      - rule_1.4.2
+
+- name: "SCORED | 1.4.2 | PATCH | Ensure permissions on bootloader config are configured for grub.conf"
+  file:
+      path: "/boot/grub/grub.conf"
+      owner: root
+      group: root
+      mode: 0400
+  when:
+      - ansible_os_family == "Debian"
+      - ubuntu2204cis_rule_1_4_2
+      - grub_conf.stat.exists
+  tags:
+      - level1
+      - scored
+      - grub
+      - patch
+      - rule_1.4.2
+
+- name: "SCORED | 1.4.2 | PATCH | Ensure permissions on bootloader config are configured for menu.lst"
+  file:
+      path: "/boot/grub/menu.lst"
+      owner: root
+      group: root
+      mode: 0400
+  when:
+      - ansible_os_family == "Debian"
+      - ubuntu2204cis_rule_1_4_2
+      - menu_lst.stat.exists
+  tags:
+      - level1
+      - scored
+      - grub
+      - patch
+      - rule_1.4.2
+
+- name: "SCORED | 1.4.3 | PATCH | Ensure authentication required for single user mode"
+  shell: "set -o pipefail;
+          if [ '{{ ubuntu2204cis_root_password }}' == 'random' ];
+          then PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c24); else PASSWORD='{{ ubuntu2204cis_root_password }}';
+          fi;
+          echo \"root:$PASSWORD\" | chpasswd"
+  args:
+      executable: /bin/bash
+  when:
+      - ubuntu2204cis_rule_1_4_3
+      - current_root_password.stdout | length > 0
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.4.3
+
+#### WRONG Numbering...........
 - name: "SCORED | 1.3.1 | PATCH | Ensure sudo is installed"
   apt:
       name:
@@ -852,218 +1122,6 @@
       - sudo
       - patch
       - rule_1.3.3
-
-- name: "SCORED | 1.4.1 | PATCH | Ensure AIDE is installed (install nullmailer instead of postfix)"
-  apt:
-      name:
-          - nullmailer
-      state: present
-      install_recommends: false
-  when:
-      - ubuntu2204cis_rule_1_4_1
-      - not postfix_installed.rc == 0
-  tags:
-      - level1
-      - scored
-      - aide
-      - patch
-      - rule_1.4.1
-
-- name: "SCORED | 1.4.1 | PATCH | Ensure AIDE is installed"
-  apt:
-      name:
-          - aide
-          - aide-common
-      state: present
-      install_recommends: false
-  when:
-      - ubuntu2204cis_rule_1_4_1
-  tags:
-      - level1
-      - scored
-      - aide
-      - patch
-      - rule_1.4.1
-
-- name: "SCORED | 1.4.1 | PATCH | Stat AIDE DB"
-  stat: path=/var/lib/aide/aide.db
-  register: aide_db
-  tags:
-      - level1
-      - scored
-      - aide
-      - patch
-      - rule_1.4.1
-
-- name: "SCORED | 1.4.1 | PATCH | Init AIDE | This may take a LONG time"
-  command: /usr/sbin/aideinit
-  args:
-      creates: /var/lib/aide/aide.db
-  when:
-      - ubuntu2204cis_config_aide
-      - ubuntu2204cis_rule_1_4_1
-      - not aide_db.stat.exists
-      - not ubuntu2204cis_skip_for_travis
-  tags:
-      - level1
-      - scored
-      - aide
-      - patch
-      - rule_1.4.1
-
-- name: "SCORED | 1.4.1 | PATCH | Stat AIDE daily cron"
-  stat: path=/etc/cron.daily/aide
-  register: aide_daily_cron
-  tags:
-    - level1
-    - scored
-    - aide
-    - file_integrity
-    - patch
-    - rule_1.4.2
-
-- name: "SCORED | 1.4.2 | PATCH | Ensure filesystem integrity is regularly checked"
-  cron:
-      name: Run AIDE integrity check weekly
-      cron_file: "{{ ubuntu2204cis_aide_cron['cron_file'] }}"
-      user: "{{ ubuntu2204cis_aide_cron['cron_user'] }}"
-      minute: "{{ ubuntu2204cis_aide_cron['aide_minute'] | default('0') }}"
-      hour: "{{ ubuntu2204cis_aide_cron['aide_hour'] | default('5') }}"
-      day: "{{ ubuntu2204cis_aide_cron['aide_day'] | default('*') }}"
-      month: "{{ ubuntu2204cis_aide_cron['aide_month'] | default('*') }}"
-      weekday: "{{ ubuntu2204cis_aide_cron['aide_weekday'] | default('0') }}"
-      job: "{{ ubuntu2204cis_aide_cron['aide_job'] }}"
-  when:
-      - ubuntu2204cis_rule_1_4_2
-      - not aide_daily_cron.stat.exists
-  tags:
-      - level1
-      - scored
-      - aide
-      - file_integrity
-      - patch
-      - rule_1.4.2
-
-- name: "SCORED | 1.5.1 | PATCH | Ensure bootloader password is set - generate password"
-  shell: "set -o pipefail;
-        if [ '{{ ubuntu2204cis_bootloader_password }}' == 'random' ];
-        then PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c12); else PASSWORD='{{ ubuntu2204cis_bootloader_password }}';
-        fi;
-        echo -e \"$PASSWORD\n$PASSWORD\" | grub-mkpasswd-pbkdf2 | awk '/grub.pbkdf/{print$NF}'"
-  register: grub_pass
-  args:
-      executable: /bin/bash
-  when:
-      - ubuntu2204cis_set_boot_pass
-      - ubuntu2204cis_rule_1_5_1
-  tags:
-      - level1
-      - scored
-      - grub
-      - patch
-      - rule_1.5.1
-
-- name: "SCORED | 1.5.1 | PATCH | Ensure bootloader password is set - generate config"
-  copy:
-      dest: /etc/grub.d/00_password
-      content: "cat << EOF\nset superusers=\"root\"\npassword_pbkdf2 root {{ grub_pass.stdout }}\nEOF"
-      owner: root
-      group: root
-      mode: 0755
-  notify: generate new grub config
-  when:
-      - ubuntu2204cis_set_boot_pass and grub_pass is defined and grub_pass.stdout is defined and grub_pass.stdout | length >0
-      - ubuntu2204cis_rule_1_5_1
-  tags:
-      - level1
-      - scored
-      - grub
-      - patch
-      - rule_1.5.1
-
-- name: "SCORED | 1.5.1 | PATCH | Ensure bootloader password is set - disable password for system boot"
-  replace:
-      path: /etc/grub.d/10_linux
-      regexp: '--class os"'
-      replace: '--class os --unrestricted"'
-  notify: generate new grub config
-  when:
-      - ubuntu2204cis_set_boot_pass
-      - ubuntu2204cis_rule_1_5_1
-      - ubuntu2204cis_rule_1_5_1_disable_password
-  tags:
-      - level1
-      - scored
-      - grub
-      - patch
-      - rule_1.5.1
-
-- name: "SCORED | 1.5.2 | PATCH | Ensure permissions on bootloader config are configured for grub.cfg"
-  file:
-      path: "/boot/grub/grub.cfg"
-      owner: root
-      group: root
-      mode: 0400
-  when:
-      - ansible_os_family == "Debian"
-      - ubuntu2204cis_rule_1_5_2
-  tags:
-      - level1
-      - scored
-      - grub
-      - patch
-      - rule_1.5.2
-
-- name: "SCORED | 1.5.2 | PATCH | Ensure permissions on bootloader config are configured for grub.conf"
-  file:
-      path: "/boot/grub/grub.conf"
-      owner: root
-      group: root
-      mode: 0400
-  when:
-      - ansible_os_family == "Debian"
-      - ubuntu2204cis_rule_1_5_2
-      - grub_conf.stat.exists
-  tags:
-      - level1
-      - scored
-      - grub
-      - patch
-      - rule_1.5.2
-
-- name: "SCORED | 1.5.2 | PATCH | Ensure permissions on bootloader config are configured for menu.lst"
-  file:
-      path: "/boot/grub/menu.lst"
-      owner: root
-      group: root
-      mode: 0400
-  when:
-      - ansible_os_family == "Debian"
-      - ubuntu2204cis_rule_1_5_2
-      - menu_lst.stat.exists
-  tags:
-      - level1
-      - scored
-      - grub
-      - patch
-      - rule_1.5.2
-
-- name: "SCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode"
-  shell: "set -o pipefail;
-          if [ '{{ ubuntu2204cis_root_password }}' == 'random' ];
-          then PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c24); else PASSWORD='{{ ubuntu2204cis_root_password }}';
-          fi;
-          echo \"root:$PASSWORD\" | chpasswd"
-  args:
-      executable: /bin/bash
-  when:
-      - ubuntu2204cis_rule_1_5_3
-      - current_root_password.stdout | length > 0
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_1.5.3
 
 - name: "SCORED | 1.6.1 | PATCH | Ensure XD/NX support is enabled"
   shell: |
