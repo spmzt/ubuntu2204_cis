@@ -157,6 +157,8 @@ ubuntu2204cis_time_synchronization_servers:
     config: "minpoll 8"
 
 ```
+
+```
 ### - name: "SCORED | 1.1.5 | PATCH | Ensure noexec option set on /tmp partition"
 It is disabled by default, noexec for /tmp will disrupt apt. /tmp contains executable scripts during package installation
 ```
