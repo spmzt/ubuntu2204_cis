@@ -488,7 +488,7 @@
         ufw:
             rule: allow
             proto: tcp
-            port: '22'
+            port: "{{ ubuntu2204cis_ssh_port }}"
 
       - name: "NOTSCORED | 3.5.1.6 | PATCH | Ensure firewall rules exist for all open ports| dns"
         ufw:

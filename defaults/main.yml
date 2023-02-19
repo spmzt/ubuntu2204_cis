@@ -373,6 +373,8 @@ ubuntu2204cis_firewall: ufw
 # 3.5.3.2 | PATCH | Ensure a table exists"
 # ubuntu2204cis_nftables_table: filter
 
+ubuntu2204cis_ssh_port: 22
+
 ubuntu2204cis_firewall_services:
   - ssh
   - dhcpv6-client

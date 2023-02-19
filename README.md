@@ -21,7 +21,7 @@ If you want to install this via the `ansible-galaxy` command you'll need to run 
 
 With this in the file requirements.yml:
 
-```
+```yaml
 - src: https://github.com/spmzt/ubuntu2204_cis.git
 ```
 
@@ -29,7 +29,7 @@ With this in the file requirements.yml:
 
 **You can find an example playbook below. please read the documentation anyway and check the settings for your case. For example, the default settings uninstall the X server!**
 
-```
+```yaml
 - name: Harden Server
   hosts: servers
   become: yes
@@ -75,7 +75,7 @@ There are many role variables defined in defaults/main.yml. This list shows the 
 ### Service variables
 ####These control whether a server should or should not be allowed to continue to run these services
 
-```
+```yaml
 ubuntu2204cis_avahi_server: false  
 ubuntu2204cis_cups_server: false  
 ubuntu2204cis_dhcp_server: false  
@@ -114,7 +114,7 @@ ubuntu2204cis_allow_autofs: false
 `ubuntu2204cis_config_aide: true`
 
 #### AIDE cron settings
-```
+```yaml
 ubuntu2204cis_aide_cron:
   cron_user: root
   cron_file: /etc/crontab
@@ -132,7 +132,7 @@ ubuntu2204cis_aide_cron:
 
 
 ### Client application requirements
-```
+```yaml
 ubuntu2204cis_openldap_clients_required: false
 ubuntu2204cis_telnet_required: false
 ubuntu2204cis_talk_required: false  
@@ -142,7 +142,7 @@ ubuntu2204cis_rpc_required: false
 ```
 
 ### Time Synchronization
-```
+```yaml
 ubuntu2204cis_time_synchronization: chrony
 ubuntu2204cis_time_Synchronization: ntp
 
@@ -172,13 +172,13 @@ To use other than random password:
 ubuntu2204cis_root_password: 'new password'
 ```
 
-```
+```yaml
 ubuntu2204cis_firewall: firewalld
 ubuntu2204cis_firewall: iptables
 ```
 
 ### 5.3.1 | PATCH | Ensure password creation requirements are configured
-```
+```yaml
 ubuntu2204cis_pwquality:
   - key: 'minlen'
     value: '14'
@@ -203,7 +203,7 @@ Many tags are available for precise control of what is and is not changed.
 
 Some examples of using tags:
 
-```
+```bash
     # Audit and patch the site
     ansible-playbook site.yml --tags="patch"
 ```
