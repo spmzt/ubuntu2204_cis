@@ -374,6 +374,7 @@ ubuntu2204cis_firewall: ufw
 # ubuntu2204cis_nftables_table: filter
 
 ubuntu2204cis_ssh_port: 22
+ubuntu2204cis_firewall_docker: true
 
 ubuntu2204cis_firewall_services:
   - ssh

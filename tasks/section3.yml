@@ -520,6 +520,26 @@
       - ubuntu2204cis_rule_3_5_1_7
       - ubuntu2204cis_firewall == "ufw"
       - ubuntu2204cis_setup_firewall
+      - not ubuntu2204cis_firewall_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_3.5.1.7
+
+- name: "SCORED | 3.5.1.7 | PATCH | Ensure default deny firewall policy"
+  ufw:
+      rule: "{{ item.rule }}"
+      direction: "{{ item.direction }}"
+  with_items:
+      - { rule: deny, direction: incoming }
+      - { rule: deny, direction: outgoing }
+      - { rule: allow, direction: routed }
+  when:
+      - ubuntu2204cis_rule_3_5_1_7
+      - ubuntu2204cis_firewall == "ufw"
+      - ubuntu2204cis_setup_firewall
+      - ubuntu2204cis_firewall_docker
   tags:
       - level1
       - scored
