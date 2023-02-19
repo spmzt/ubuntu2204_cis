@@ -532,8 +532,8 @@
       rule: "{{ item.rule }}"
       direction: "{{ item.direction }}"
   with_items:
-      - { rule: deny, direction: incoming }
-      - { rule: deny, direction: outgoing }
+      - { rule: deny, direction: in }
+      - { rule: deny, direction: out }
       - { rule: allow, direction: routed }
   when:
       - ubuntu2204cis_rule_3_5_1_7
