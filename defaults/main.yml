@@ -4,11 +4,11 @@ ubuntu2204cis_skip_for_travis: true
 
 ubuntu2204cis_notauto: false
 ubuntu2204cis_section1: true
-ubuntu2204cis_section2: false
-ubuntu2204cis_section3: false
-ubuntu2204cis_section4: false
+ubuntu2204cis_section2: true
+ubuntu2204cis_section3: true
+ubuntu2204cis_section4: true
 ubuntu2204cis_section5: false
-ubuntu2204cis_section6: false
+ubuntu2204cis_section6: true
 
 ubuntu2204cis_selinux_disable: true
 ubuntu2204cis_auditd_disable: false
@@ -21,36 +21,36 @@ ubuntu2204cis_ignore_remount_errors: false
 # PLEASE NOTE: These work in coordination with the section # group variables and tags.
 # You must enable an entire section in order for the variables below to take effect.
 # Section 1 rules
-ubuntu2204cis_rule_1_1_1_1: false #true
-ubuntu2204cis_rule_1_1_1_2: false #true
-ubuntu2204cis_rule_1_1_1_3: false #true
-ubuntu2204cis_rule_1_1_2_1: false #true
-ubuntu2204cis_rule_1_1_2_2: false #true
-ubuntu2204cis_rule_1_1_2_3: false #true
-ubuntu2204cis_rule_1_1_2_4: false #true
-ubuntu2204cis_rule_1_1_3_1: false #true
-ubuntu2204cis_rule_1_1_3_2: false #true
-ubuntu2204cis_rule_1_1_3_3: false #true
-ubuntu2204cis_rule_1_1_4_1: false #true
-ubuntu2204cis_rule_1_1_4_2: false #true
-ubuntu2204cis_rule_1_1_4_3: false #true
-ubuntu2204cis_rule_1_1_4_4: false #true
-ubuntu2204cis_rule_1_1_5_1: false #true
-ubuntu2204cis_rule_1_1_5_2: false #true
-ubuntu2204cis_rule_1_1_5_3: false #true
-ubuntu2204cis_rule_1_1_5_4: false #true
-ubuntu2204cis_rule_1_1_6_1: false #true
-ubuntu2204cis_rule_1_1_6_2: false #true
-ubuntu2204cis_rule_1_1_6_3: false #true
-ubuntu2204cis_rule_1_1_6_4: false #true
-ubuntu2204cis_rule_1_1_7_1: false #true
-ubuntu2204cis_rule_1_1_7_2: false #true
-ubuntu2204cis_rule_1_1_7_3: false #true
-ubuntu2204cis_rule_1_1_8_1: false #true
-ubuntu2204cis_rule_1_1_8_2: false #true
-ubuntu2204cis_rule_1_1_8_3: false #true
-ubuntu2204cis_rule_1_1_9:  false #true
-ubuntu2204cis_rule_1_1_10: false #true
+ubuntu2204cis_rule_1_1_1_1: true
+ubuntu2204cis_rule_1_1_1_2: true
+ubuntu2204cis_rule_1_1_1_3: true
+ubuntu2204cis_rule_1_1_2_1: true
+ubuntu2204cis_rule_1_1_2_2: true
+ubuntu2204cis_rule_1_1_2_3: true
+ubuntu2204cis_rule_1_1_2_4: true
+ubuntu2204cis_rule_1_1_3_1: true
+ubuntu2204cis_rule_1_1_3_2: true
+ubuntu2204cis_rule_1_1_3_3: true
+ubuntu2204cis_rule_1_1_4_1: true
+ubuntu2204cis_rule_1_1_4_2: true
+ubuntu2204cis_rule_1_1_4_3: true
+ubuntu2204cis_rule_1_1_4_4: true
+ubuntu2204cis_rule_1_1_5_1: true
+ubuntu2204cis_rule_1_1_5_2: true
+ubuntu2204cis_rule_1_1_5_3: true
+ubuntu2204cis_rule_1_1_5_4: true
+ubuntu2204cis_rule_1_1_6_1: true
+ubuntu2204cis_rule_1_1_6_2: true
+ubuntu2204cis_rule_1_1_6_3: true
+ubuntu2204cis_rule_1_1_6_4: true
+ubuntu2204cis_rule_1_1_7_1: true
+ubuntu2204cis_rule_1_1_7_2: true
+ubuntu2204cis_rule_1_1_7_3: true
+ubuntu2204cis_rule_1_1_8_1: true
+ubuntu2204cis_rule_1_1_8_2: true
+ubuntu2204cis_rule_1_1_8_3: true
+ubuntu2204cis_rule_1_1_9:  true
+ubuntu2204cis_rule_1_1_10: true
 
 ubuntu2204cis_rule_1_2_1: true
 ubuntu2204cis_rule_1_2_2: true
@@ -62,7 +62,7 @@ ubuntu2204cis_rule_1_4_2: true
 ubuntu2204cis_rule_1_4_3: true
 ubuntu2204cis_rule_1_5_1: true
 ubuntu2204cis_rule_1_5_2: true
-ubuntu2204cis_rule_1_5_3: false
+ubuntu2204cis_rule_1_5_3: true
 ubuntu2204cis_rule_1_5_4: true
 ubuntu2204cis_rule_1_6_1_1: true
 ubuntu2204cis_rule_1_6_1_2: true
@@ -368,12 +368,12 @@ ubuntu2204cis_time_synchronization_servers:
 ubuntu2204cis_setup_tcp_wrappers: false
 
 # ubuntu2204cis_firewall: firewalld
-ubuntu2204cis_firewall: iptables
-# ubuntu2204cis_firewall: ufw
+# ubuntu2204cis_firewall: iptables
+ubuntu2204cis_firewall: ufw
 # ubuntu2204cis_firewall: nftables
 
 # 3.5.3.2 | PATCH | Ensure a table exists"
-ubuntu2204cis_nftables_table: filter
+# ubuntu2204cis_nftables_table: filter
 
 ubuntu2204cis_firewall_services:
   - ssh
@@ -470,12 +470,6 @@ tcp_wrapper_package:
 bashrc_file:
   RedHat: /etc/bashrc
   Debian: /etc/bash.bashrc
-tmp_mount_file:
-  RedHat: /usr/lib/systemd/system/tmp.mount
-  Debian: /usr/share/systemd/tmp.mount
-tmp_mount_options:
-  RedHat: mode=1777,strictatime,noexec,nodev,nosuid
-  Debian: mode=1777,strictatime,nodev,nosuid,noexec
 chrony_config_file:
   RedHat: /etc/chrony.conf
   Debian: /etc/chrony/chrony.conf
@@ -485,3 +479,5 @@ chrony_system_user:
 
 ### Firewall
 ubuntu2204cis_setup_firewall: true
+
+ubuntu2204cis_root_password: random
