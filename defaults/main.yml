@@ -77,11 +77,10 @@ ubuntu2204cis_rule_1_7_6: true
 ubuntu2204cis_rule_1_8_1: true
 ubuntu2204cis_rule_1_8_2: false # 1.8.1
 ubuntu2204cis_rule_1_8_3: false # 1.8.1
-
 ubuntu2204cis_rule_1_9: true
 
 # Section 2 rules
-ubuntu2204cis_rule_2_1_1: true
+ubuntu2204cis_rule_2_1_1_1: true
 ubuntu2204cis_rule_2_1_2: true
 ubuntu2204cis_rule_2_1_3: true
 ubuntu2204cis_rule_2_1_4: true
@@ -111,7 +110,6 @@ ubuntu2204cis_rule_2_2_13: true
 ubuntu2204cis_rule_2_2_14: true
 ubuntu2204cis_rule_2_2_15: true
 ubuntu2204cis_rule_2_2_16: true
-ubuntu2204cis_rule_2_2_17: true
 ubuntu2204cis_rule_2_3_1: true
 ubuntu2204cis_rule_2_3_2: true
 ubuntu2204cis_rule_2_3_3: true
