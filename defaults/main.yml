@@ -25,7 +25,7 @@ ubuntu2204cis_rule_1_1_1_1: true
 ubuntu2204cis_rule_1_1_1_2: true
 ubuntu2204cis_rule_1_1_1_3: true
 ubuntu2204cis_rule_1_1_2_1: true
-ubuntu2204cis_rule_1_1_2_2: true
+ubuntu2204cis_rule_1_1_2_2: false # Will disrupt apt and docker
 ubuntu2204cis_rule_1_1_2_3: true
 ubuntu2204cis_rule_1_1_2_4: true
 ubuntu2204cis_rule_1_1_3_1: true

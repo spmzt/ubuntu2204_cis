@@ -1,7 +1,7 @@
-Ubuntu 22.04 CIS STIG
+Ubuntu 22.04 CIS
 ================
 
-This role was cloned from Florianutz (https://github.com/francsw/ubuntu2204_cis) repo and changed to work with Ubuntu 22.04.
+This role was cloned and completely reimplemented from Florianutz (https://github.com/francsw/ubuntu2204_cis) repo and changed to work with Ubuntu 22.04.
 
 Configure Ubuntu 22.04 machine to be CIS compliant. Level 1 and 2 findings will be corrected by default.
 
@@ -22,7 +22,7 @@ If you want to install this via the `ansible-galaxy` command you'll need to run 
 With this in the file requirements.yml:
 
 ```
-- src: https://github.com/spmzt/ubuntu2004_cis.git
+- src: https://github.com/spmzt/ubuntu2204_cis.git
 ```
 
 ## Example Playbook
@@ -158,7 +158,7 @@ ubuntu2204cis_time_synchronization_servers:
 
 ```
 ### - name: "SCORED | 1.1.5 | PATCH | Ensure noexec option set on /tmp partition"
-It is not implemented, noexec for /tmp will disrupt apt. /tmp contains executable scripts during package installation
+It is disabled by default, noexec for /tmp will disrupt apt. /tmp contains executable scripts during package installation
 ```
 
 ```  
@@ -192,7 +192,6 @@ ubuntu2204cis_pwquality:
     value: '-1'
 ```
 
-
 ## Dependencies
 
 Developed and testes with Ansible 2.10
@@ -211,4 +210,4 @@ Some examples of using tags:
 
 ## License
 
-BSD
+MIT
