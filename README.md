@@ -161,7 +161,6 @@ ubuntu2204cis_time_synchronization_servers:
 ### "SCORED | 1.1.5 | PATCH | Ensure noexec option set on /tmp partition"
 It is disabled by default, noexec for /tmp will disrupt apt. /tmp contains executable scripts during package installation
 
-```  
 ### 1.5.3 | PATCH | Ensure authentication required for single user mode
 It is disabled by default as it is setting random password for root. To enable it set:
 ```yaml
