@@ -7,7 +7,7 @@ ubuntu2204cis_section1: true
 ubuntu2204cis_section2: true
 ubuntu2204cis_section3: true
 ubuntu2204cis_section4: true
-ubuntu2204cis_section5: false
+ubuntu2204cis_section5: true
 ubuntu2204cis_section6: true
 
 ubuntu2204cis_selinux_disable: true
